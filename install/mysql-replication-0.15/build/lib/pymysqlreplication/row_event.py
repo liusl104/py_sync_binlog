@@ -409,9 +409,11 @@ class RowsEvent(BinLogEvent):
 
     def _dump(self):
         super(RowsEvent, self)._dump()
-        print("Table: %s.%s" % (self.schema, self.table))
-        print("Affected columns: %d" % self.number_of_columns)
-        print("Changed rows: %d" % (len(self.rows)))
+        # print("Table: %s.%s" % (self.schema, self.table))
+        # print("Affected columns: %d" % self.number_of_columns)
+        # print("Changed rows: %d" % (len(self.rows)))
+        return {'Table':'%s.%s'% (self.schema, self.table),'Affected columns':'%d' % self.number_of_columns,
+                'Changed rows':'%d'% (len(self.rows))}
 
     def _fetch_rows(self):
         self.__rows = []
@@ -449,12 +451,13 @@ class DeleteRowsEvent(RowsEvent):
         return row
 
     def _dump(self):
-        super(DeleteRowsEvent, self)._dump()
-        print("Values:")
-        for row in self.rows:
-            print("--")
-            for key in row["values"]:
-                print("*", key, ":", row["values"][key])
+        delete_row = super(DeleteRowsEvent, self)._dump()
+        #print("Values:")
+        #for row in self.rows:
+        #    print("--")
+        #    for key in row["values"]:
+        #        print("*", key, ":", row["values"][key])
+        return {"Values":self.rows,"info":delete_row}
 
 
 class WriteRowsEvent(RowsEvent):
@@ -477,12 +480,13 @@ class WriteRowsEvent(RowsEvent):
         return row
 
     def _dump(self):
-        super(WriteRowsEvent, self)._dump()
-        print("Values:")
-        for row in self.rows:
-            print("--")
-            for key in row["values"]:
-                print("*", key, ":", row["values"][key])
+        write_row = super(WriteRowsEvent, self)._dump()
+        # print("Values:")
+        # for row in self.rows:
+        #     print("--")
+        #     for key in row["values"]:
+        #         print("*", key, ":", row["values"][key])
+        return {"Values":self.rows,"info":write_row}
 
 
 class UpdateRowsEvent(RowsEvent):
@@ -515,15 +519,16 @@ class UpdateRowsEvent(RowsEvent):
         return row
 
     def _dump(self):
-        super(UpdateRowsEvent, self)._dump()
-        print("Affected columns: %d" % self.number_of_columns)
-        print("Values:")
-        for row in self.rows:
-            print("--")
-            for key in row["before_values"]:
-                print("*%s:%s=>%s" % (key,
-                                      row["before_values"][key],
-                                      row["after_values"][key]))
+        update_row = super(UpdateRowsEvent, self)._dump()
+        #print("Affected columns: %d" % self.number_of_columns)
+        #print("Values:")
+        #for row in self.rows:
+        #    print("--")
+        #    for key in row["before_values"]:
+        #        print("*%s:%s=>%s" % (key,
+        #                              row["before_values"][key],
+        #                              row["after_values"][key]))
+        return {"Affected columns":self.number_of_columns,"Values":self.rows,"info":update_row}
 
 
 class TableMapEvent(BinLogEvent):
@@ -615,7 +620,8 @@ class TableMapEvent(BinLogEvent):
 
     def _dump(self):
         super(TableMapEvent, self)._dump()
-        print("Table id: %d" % (self.table_id))
-        print("Schema: %s" % (self.schema))
-        print("Table: %s" % (self.table))
-        print("Columns: %s" % (self.column_count))
+        # print("Table id: %d" % (self.table_id))
+        # print("Schema: %s" % (self.schema))
+        # print("Table: %s" % (self.table))
+        # print("Columns: %s" % (self.column_count))
+        return {'Table id':self.table_id,'Schema':self.schema,'Table':self.table,'Columns':self.column_count}
