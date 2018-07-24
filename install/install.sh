@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 定义安装包
-install_package=("PyYAML-3.12.tar.gz" "certifi-2018.4.16-py2.py3-none-any.whl" "chardet-3.0.4-py2.py3-none-any.whl" "idna-2.7-py2.py3-none-any.whl" "shellescape-3.4.1-py2.py3-none-any.whl" "urllib3-1.23-py2.py3-none-any.whl" "requests-2.19.1-py2.py3-none-any.whl" "Naked-0.1.31-py2.py3-none-any.whl" "PyMySQL-0.8.1.tar.gz" "mysql-replication-0.15.zip" "crypto-1.4.1.tar.gz" "pycrypto-2.6.1.tar.gz")
+install_package=("PyYAML-3.12.tar.gz" "certifi-2018.4.16-py2.py3-none-any.whl" "chardet-3.0.4-py2.py3-none-any.whl" "idna-2.7-py2.py3-none-any.whl" "shellescape-3.4.1-py2.py3-none-any.whl" "urllib3-1.23-py2.py3-none-any.whl" "requests-2.19.1-py2.py3-none-any.whl" "Naked-0.1.31-py2.py3-none-any.whl" "PyMySQL-0.8.1.tar.gz" "crypto-1.4.1.tar.gz" "pycrypto-2.6.1.tar.gz")
 
 checkPython()
 {
@@ -77,7 +77,8 @@ if [ $v -eq 0 ];then
    for i in ${install_package[@]}
     do
        echo "install ...............................................  $i"
-       pip3 install $i
+	   install_pk=`ls ${i}`
+       pip3 install $install_pk
        command_status=$?
        if [ $command_status -eq 0 ];then
          echo "Install $i package successfully"
@@ -89,7 +90,9 @@ if [ $v -eq 0 ];then
 else
   echo "install fail"
 fi
+cd mysql-replication-0.15
+python3 setup.py install
 echo "-------------------------------------------------------------------------------"
-echo "Run `which python3` `cd ..&&pwd`/startup.py to start the real-time synchronization program"
+echo "Run `which python3` `cd ../..&&pwd`/startup.py to start the real-time synchronization program"
 echo "Read the readme file before running"
 echo "-------------------------------------------------------------------------------"

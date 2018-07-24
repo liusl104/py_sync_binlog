@@ -34,14 +34,17 @@ class BinLogEvent(object):
         return struct.unpack('<Q', table_id)[0]
 
     def dump(self):
-        print("class: %s " % (self.__class__.__name__))
-        print("Date: %s" % (datetime.datetime.fromtimestamp(self.timestamp)
-                            .isoformat()))
-        print("Log position: %d" % self.packet.log_pos)
-        print("Event size: %d" % (self.event_size))
-        print("Read bytes: %d" % (self.packet.read_bytes))
-        self._dump()
-        print()
+        # print("class: %s " % (self.__class__.__name__))
+        # print("Date: %s" % (datetime.datetime.fromtimestamp(self.timestamp).strftime("%Y-%m-%d %H:%M:%S.%f")))
+        # print("Log position: %d" % self.packet.log_pos)
+        # print("Event size: %d" % (self.event_size))
+        # print("Read bytes: %d" % (self.packet.read_bytes))
+        # print()
+        row_values = self._dump()
+        return {'class': '%s'% (self.__class__.__name__),'Date':'%s'% (datetime.datetime.fromtimestamp(self.timestamp)
+                            .strftime("%Y-%m-%d %H:%M:%S.%f")),'Log position':'%d' % self.packet.log_pos,
+                'Event size':'%d' % (self.event_size),'Read bytes': '%d' % (self.packet.read_bytes),"row_values":"%s" % row_values}
+
 
     def _dump(self):
         """Core data dumped for the event"""
@@ -71,8 +74,9 @@ class GtidEvent(BinLogEvent):
         return gtid
 
     def _dump(self):
-        print("Commit: %s" % self.commit_flag)
-        print("GTID_NEXT: %s" % self.gtid)
+        # print("Commit: %s" % self.commit_flag)
+        # print("GTID_NEXT: %s" % self.gtid)
+        return {'Commit': '%s' % self.commit_flag,'GTID_NEXT':'%s'% self.gtid}
 
     def __repr__(self):
         return '<GtidEvent "%s">' % self.gtid
@@ -92,10 +96,13 @@ class RotateEvent(BinLogEvent):
         self.next_binlog = self.packet.read(event_size - 8).decode()
 
     def dump(self):
-        print("class: %s " % (self.__class__.__name__))
-        print("Position: %d" % self.position)
-        print("Next binlog file: %s" % self.next_binlog)
-        print()
+        # print("class: %s " % (self.__class__.__name__))
+        # print("Position: %d" % self.position)
+        # print("Next binlog file: %s" % self.next_binlog)
+        # print()
+        return {'class':'%s' % (self.__class__.__name__),'Position': '%d' % self.position, 'Next binlog file': '%s' % self.next_binlog}
+
+
 
 
 class FormatDescriptionEvent(BinLogEvent):
@@ -120,7 +127,8 @@ class XidEvent(BinLogEvent):
 
     def _dump(self):
         super(XidEvent, self)._dump()
-        print("Transaction ID: %d" % (self.xid))
+        # print("Transaction ID: %d" % (self.xid))
+        return {'Transaction ID': self.xid}
 
 
 class HeartbeatLogEvent(BinLogEvent):
@@ -151,7 +159,8 @@ class HeartbeatLogEvent(BinLogEvent):
 
     def _dump(self):
         super(HeartbeatLogEvent, self)._dump()
-        print("Current binlog: %s" % (self.ident))
+        # print("Current binlog: %s" % (self.ident))
+        return {'Current binlog':self.ident}
 
 
 class QueryEvent(BinLogEvent):
@@ -179,9 +188,10 @@ class QueryEvent(BinLogEvent):
 
     def _dump(self):
         super(QueryEvent, self)._dump()
-        print("Schema: %s" % (self.schema))
-        print("Execution time: %d" % (self.execution_time))
-        print("Query: %s" % (self.query))
+        # print("Schema: %s" % (self.schema.decode('utf-8')))
+        # print("Execution time: %d" % (self.execution_time))
+        # print("Query: %s" % (self.query))
+        return {'Schema':self.schema.decode('utf-8'),'Execution time':self.execution_time,'Query':self.query}
 
 
 class BeginLoadQueryEvent(BinLogEvent):
@@ -201,8 +211,9 @@ class BeginLoadQueryEvent(BinLogEvent):
 
     def _dump(self):
         super(BeginLoadQueryEvent, self)._dump()
-        print("File id: %d" % (self.file_id))
-        print("Block data: %s" % (self.block_data))
+        # print("File id: %d" % (self.file_id))
+        # print("Block data: %s" % (self.block_data))
+        return {'File id':self.file_id, 'Block data':self.block_data}
 
 
 class ExecuteLoadQueryEvent(BinLogEvent):
@@ -239,15 +250,20 @@ class ExecuteLoadQueryEvent(BinLogEvent):
 
     def _dump(self):
         super(ExecuteLoadQueryEvent, self)._dump()
-        print("Slave proxy id: %d" % (self.slave_proxy_id))
-        print("Execution time: %d" % (self.execution_time))
-        print("Schema length: %d" % (self.schema_length))
-        print("Error code: %d" % (self.error_code))
-        print("Status vars length: %d" % (self.status_vars_length))
-        print("File id: %d" % (self.file_id))
-        print("Start pos: %d" % (self.start_pos))
-        print("End pos: %d" % (self.end_pos))
-        print("Dup handling flags: %d" % (self.dup_handling_flags))
+        # print("Slave proxy id: %d" % (self.slave_proxy_id))
+        # print("Execution time: %d" % (self.execution_time))
+        # print("Schema length: %d" % (self.schema_length))
+        # print("Error code: %d" % (self.error_code))
+        # print("Status vars length: %d" % (self.status_vars_length))
+        # print("File id: %d" % (self.file_id))
+        # print("Start pos: %d" % (self.start_pos))
+        # print("End pos: %d" % (self.end_pos))
+        # print("Dup handling flags: %d" % (self.dup_handling_flags))
+        return {'Slave proxy id':'%d'% (self.slave_proxy_id),'Execution time':'%d'% (self.execution_time),
+                'Schema length':'%d'% (self.schema_length),'Error code':'%d'% (self.error_code),
+                'Status vars length':'%d'% (self.status_vars_length),'File id':'%d'% (self.file_id),
+                'Start pos':'%d'% (self.start_pos),'End pos':'%d'% (self.end_pos),
+                'Dup handling flags':'%d' % (self.dup_handling_flags)}
 
 
 class IntvarEvent(BinLogEvent):
@@ -267,8 +283,9 @@ class IntvarEvent(BinLogEvent):
 
     def _dump(self):
         super(IntvarEvent, self)._dump()
-        print("type: %d" % (self.type))
-        print("Value: %d" % (self.value))
+        # print("type: %d" % (self.type))
+        # print("Value: %d" % (self.value))
+        return {'type':self.type,'Value':self.value}
 
 
 class NotImplementedEvent(BinLogEvent):
