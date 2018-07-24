@@ -23,38 +23,49 @@ v 1.0.1<br>
 -----  安装:<br>
 在install目录执行: sh install.sh<br>
 
------  目录解构描述:
-py_sync_binlog_mysql
-├── aes_encryption.py // 字段加密模块
-├── analysis_binlog_main.py // 解析binlog event 模块
-├── analysis_binlogs.py // 获取binlog event 模块
-├── Checkpoint.txt // 记录检查点文件
-├── Decrypt.py //解密模块
-├── encryption.py // 密码加密模块
-├── install // 安装目录
-│   ├── certifi-2018.4.16-py2.py3-none-any.whl
-│   ├── chardet-3.0.4-py2.py3-none-any.whl
-│   ├── crypto-1.4.1.tar.gz
-│   ├── idna-2.7-py2.py3-none-any.whl
-│   ├── install.sh
-│   ├── mysql-replication-0.15.zip
-│   ├── Naked-0.1.31-py2.py3-none-any.whl
-│   ├── pycrypto-2.6.1.tar.gz
-│   ├── PyMySQL-0.8.1.tar.gz
-│   ├── PyYAML-3.12.tar.gz
-│   ├── requests-2.19.1-py2.py3-none-any.whl
-│   ├── shellescape-3.4.1-py2.py3-none-any.whl
-│   └── urllib3-1.23-py2.py3-none-any.whl
-├── logs // 日志目录(默认按日切割日志文件，保留7天)
-├── main_multi_threading.py // 多进程同步处理
-├── merge_dbname_tables.py  //处理分库分表逻辑处理
-├── output_log.py // 启动日志配置
-├── ReadMe  // 帮助文档 
-├── safe_shutdown.py //监控PID文件模块
-├── send_binlog.py // 发送解析binlog sql
-├── startup.py // 启动程序
-├── sync_conf.py // 配置文件
-└── update_post.py // 更新检查点文件
+-----  目录解构描述:<br>
+py_sync_binlog_mysql<br>
+|-- auto_cnf<br>
+|   `-- auto.cnf<br>
+|-- checkpoint  // 检查点文件<br>
+|-- encryption // 密码加密模块<br>
+|   `-- passwd_encryption.py<br>
+|-- install //安装目录<br>
+|   |-- certifi-2018.4.16-py2.py3-none-any.whl<br>
+|   |-- chardet-3.0.4-py2.py3-none-any.whl<br>
+|   |-- crypto-1.4.1.tar.gz<br>
+|   |-- idna-2.7-py2.py3-none-any.whl<br>
+|   |-- install.sh<br>
+|   |-- mysql-replication-0.15  //复制模块<br>
+|   |   |-- setup.cfg<br>
+|   |   `-- setup.py<br>
+|   |-- Naked-0.1.31-py2.py3-none-any.whl<br>
+|   |-- pycrypto-2.6.1.tar.gz<br>
+|   |-- PyMySQL-0.8.1.tar.gz<br>
+|   |-- PyYAML-3.12.tar.gz<br>
+|   |-- requests-2.19.1-py2.py3-none-any.whl<br>
+|   |-- shellescape-3.4.1-py2.py3-none-any.whl<br>
+|   `-- urllib3-1.23-py2.py3-none-any.whl<br>
+|-- LICENSE<br>
+|-- logs <br>
+|-- README.md<br>
+|-- startup.py  // 启动文件<br>
+|-- sync_binlog //主目录<br>
+|   |-- AES_Encryption.py //同步加密模块<br>
+|   |-- analysis_binlog_main.py // 分析模块<br>
+|   |-- analysis_binlogs.py 
+|   |-- analysis_rows.py // 行解析模块<br>
+|   |-- batch_analysis_insert_sql.py // 批量提交模块<br>
+|   |-- Decrypt.py //同步加密模块<br>
+|   |-- global_transaction_insert_batch_id.py // 全局ID模块<br>
+|   |-- main_multi_threading.py // 多线程模块(暂时没有用)<br>
+|   |-- merge_dbname_tables.py // 合并模块<br>
+|   |-- output_log.py // 日志模块<br>
+|   |-- parameter_check.py // 参数检查模块<br>
+|   |-- safe_shutdown.py // 安全关闭模块<br>
+|   |-- send_binlog.py // 发送SQL模块<br>
+|   `-- update_post.py // 更新检查点模块<br>
+`-- sync_conf.py // 配置文件<br>
 
 ----- 常见问题<br>
 1、同步出现更新未找到匹配行或者删除未匹配行，程序自动自动退出<br>
