@@ -4,7 +4,7 @@ from sync_binlog.update_post import update_binlog_pos
 from sync_binlog.send_binlog import *
 from sync_binlog.analysis_rows import *
 from sync_binlog.merge_dbname_tables import *
-from sync_conf import merge_db_table
+from sync_conf import *
 from sync_binlog.send_binlog import Mysql
 from sync_binlog import batch_analysis_insert_sql
 import datetime
@@ -43,9 +43,15 @@ def analysis_query_event(info, init_binlog_file_name):
             loging.info("规则库变更 %s ---> %s " % (schema, merge_db))
             if write_db is True:
                 if schema != merge_db:
-                    mysql.my_sql('use %s' % merge_replicate_table(schema))
+                    merge_schema = merge_replicate_table(schema)
+                    if merge_db_table:
+                        if merge_schema in only_schemas:
+                            mysql.my_sql('use %s' % merge_schema)
+
                 else:
-                    mysql.my_sql('use %s' % schema)
+                    if merge_db_table:
+                        if schema in only_schemas:
+                            mysql.my_sql('use %s' % schema)
         else:
             if write_db is True:
                 if "create database" not in str(row_values["Query"]).lower():

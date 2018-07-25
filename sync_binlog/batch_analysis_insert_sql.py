@@ -36,6 +36,8 @@ def cntrast_insert_class_tab(info, table_map):
             count_num = 0
             return False
     elif class_type in ("UpdateRowsEvent", "DeleteRowsEvent"):
+        if len(analysis_sql) == 0:
+            return True
         analysis_sql = analysis_sql[:analysis_sql.rindex(',')]
         if write_db:
             loging.debug("Query : %s " % analysis_sql)
