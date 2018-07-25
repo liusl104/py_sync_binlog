@@ -52,6 +52,8 @@ def analysis_query_event(info, init_binlog_file_name):
                     if merge_db_table:
                         if schema in only_schemas:
                             mysql.my_sql('use %s' % schema)
+                    else:
+                        mysql.my_sql('use %s' % schema)
         else:
             if write_db is True:
                 if "create database" not in str(row_values["Query"]).lower():
