@@ -6,6 +6,7 @@ from sync_binlog.output_log import logger as loging
 from sync_conf import write_db, batch_number
 from sync_binlog.update_post import update_binlog_pos
 from sync_binlog.global_transaction_insert_batch_id import get_auto_uuid_cnf
+import datetime
 
 analysis_sql = ''
 count_num = 0

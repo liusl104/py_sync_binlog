@@ -25,8 +25,8 @@ def main_binlog(only_schemas=only_schemas, server_id=server_id, hi_table_map=Non
                                 ignored_schemas=ignored_schemas,
                                 log_file=get_new_binlog_pos(binlogfile_Label_file)[0],
                                 log_pos=int(get_new_binlog_pos(binlogfile_Label_file)[1]))
-    try:
-        for binlogevent in stream:
+    #try:
+    for binlogevent in stream:
             info = binlogevent.dump()
             cntrast_insert_class_tab(info, hi_table_map)
             safety_shutdown()
@@ -53,6 +53,6 @@ def main_binlog(only_schemas=only_schemas, server_id=server_id, hi_table_map=Non
                 analysis_stop_event(info, init_binlog_file_name)
             else:
                 loging.warning(info)
-    except Exception as er:
-        loging.critical("The connection source DB has an exception, "
-                        "please check the configuration information：%s " % er)
+    #except Exception as er:
+    #    loging.critical("The connection source DB has an exception, "
+    #                    "please check the configuration information：%s " % er)
