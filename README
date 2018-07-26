@@ -23,6 +23,15 @@ v 1.0.1
 -----  安装:
 在install目录执行: sh install.sh
 
+-----  初次启动程序说明:
+启动在安装后最后一行有提示怎么启动，需要注意的是初次启动需要手动获取master binlog file 和 position (命令:show master status)
+并且手工分两行写入checkpoint文件中,再运行启动命令
+示例：
+binlog.000005
+154
+-----  关闭程序说明:
+请一定要安全关闭，运行python3 shutdown.py进行关闭,如果非正常关闭如强制关闭进程，可能导致数据丢失和checkpoint文件损坏
+
 -----  目录解构描述:
 py_sync_binlog_mysql
 |-- auto_cnf
@@ -49,7 +58,7 @@ py_sync_binlog_mysql
 |-- LICENSE
 |-- logs 
 |-- README.md
-|-- startup.py  // 启动文件
+|-- startup.py  // 启动程序
 |-- sync_binlog //主目录
 |   |-- AES_Encryption.py //同步加密模块
 |   |-- analysis_binlog_main.py // 分析模块
@@ -66,6 +75,7 @@ py_sync_binlog_mysql
 |   |-- send_binlog.py // 发送SQL模块
 |   `-- update_post.py // 更新检查点模块
 `-- sync_conf.py // 配置文件
+`-- shutdown.py // 关闭程序
 
 ----- 常见问题
 1、同步出现更新未找到匹配行或者删除未匹配行，程序自动自动退出
@@ -77,4 +87,5 @@ py_sync_binlog_mysql
 处理步骤：方式有两个
 一、重启程序默认跳过。
 二、找到上游数据在Navicat中查询数据复制为insert语句，删除上游数据，重新插入，确保下游也无该数据，再重启同步程序
+
 
