@@ -66,6 +66,18 @@ only_tables = None
         """
 # log
 log_bese_path = os.getcwd()
+log_backup_count = 7
+"""
+'CRITICAL': CRITICAL,
+    'FATAL': FATAL,
+    'ERROR': ERROR,
+    'WARN': WARNING,
+    'WARNING': WARNING,
+    'INFO': INFO,
+    'DEBUG': DEBUG,
+    'NOTSET': NOTSET,
+"""
+log_msg_level = 'DEBUG'
 
 # 设置根据库多进程同步,需要指定schemas,几个库就几个进程
 databases = None
