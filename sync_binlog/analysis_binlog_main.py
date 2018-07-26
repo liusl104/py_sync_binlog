@@ -9,6 +9,7 @@ from sync_conf import *
 from sync_binlog.send_binlog import Mysql
 from sync_binlog import batch_analysis_insert_sql
 import datetime
+from decimal import Decimal
 
 mysql = Mysql("/*!40014 SET FOREIGN_KEY_CHECKS=0*/")
 
@@ -63,8 +64,14 @@ def analysis_query_event(info, init_binlog_file_name):
                         mysql.my_sql('use %s' % schema)
         else:
             if write_db is True:
-                if "create database" not in str(row_values["Query"]).lower():
-                    mysql.my_sql('use %s' % schema)
+                if only_schemas is None:
+                    if "create database" not in str(row_values["Query"]).lower():
+                        mysql.my_sql('use %s' % schema)
+                else:
+                    if schema in only_schemas:
+                        mysql.my_sql('use %s' % schema)
+                    else:
+                        loging.info("skip execute [use %s]" % schema)
     if row_values["Query"] == "BEGIN":
         loging.debug("skip sql begin transaction")
     else:
@@ -82,9 +89,18 @@ def analysis_query_event(info, init_binlog_file_name):
                             break
 
             else:
-                loging.info("同步复制DDL --> %s" % row_values["Query"])
-                mysql.my_sql("/*!40014 SET FOREIGN_KEY_CHECKS=0*/")
-                mysql.my_sql(row_values["Query"])
+                if write_ddl:
+                    if only_schemas is None:
+                        loging.info("同步复制DDL --> %s" % row_values["Query"])
+                        mysql.my_sql("/*!40014 SET FOREIGN_KEY_CHECKS=0*/")
+                        mysql.my_sql(row_values["Query"])
+                    else:
+                        if schema in only_schemas:
+                            loging.info("同步复制DDL --> %s" % row_values["Query"])
+                            mysql.my_sql("/*!40014 SET FOREIGN_KEY_CHECKS=0*/")
+                            mysql.my_sql(row_values["Query"])
+                        else:
+                            loging.info("skip DDL sql: %s " % row_values["Query"])
         else:
             loging.warning("DDL 语句 暂不支持")
     update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)

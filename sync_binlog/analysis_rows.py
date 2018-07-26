@@ -2,6 +2,8 @@
 
 from sync_conf import encryption_column, encryption_db_column
 from sync_binlog.AES_Encryption import ase_encryption
+from decimal import Decimal
+import datetime
 
 
 def update_before_values(values, table_map=None):
