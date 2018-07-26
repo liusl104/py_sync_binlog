@@ -36,17 +36,17 @@ def merge_replicate_table(db_name, table_name=None):
             return db_name
     else:
         if table_name is not None:
-            try:
+            if db_name in rule["old_db"] and table_name in rule["old_tb"]:
                 db = rule["new_db"][rule["old_db"].index(db_name)]
                 tb = rule["new_tb"][rule["old_tb"].index(table_name)]
-            except Exception as e:
-                loging.warning("获取规则表出错，请检查配置文件。错误信息：%s " % e)
+            else:
+                loging.warning("获取匹配规则表出错,返回原始表")
                 return db_name, table_name
         else:
-            try:
+            if db_name in rule["old_db"]:
                 db = rule["new_db"][rule["old_db"].index(db_name)]
                 return db
-            except Exception:
+            else:
                 loging.warning("获取%s库不在规则表中，将返回原始表" % db_name)
                 return db_name
         return db, tb

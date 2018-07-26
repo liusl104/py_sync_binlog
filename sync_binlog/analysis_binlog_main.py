@@ -1,6 +1,7 @@
 # encoding=utf8
 
 from sync_binlog.update_post import update_binlog_pos
+from sync_binlog.output_log import logger as loging
 from sync_binlog.send_binlog import *
 from sync_binlog.analysis_rows import *
 from sync_binlog.merge_dbname_tables import *
@@ -42,16 +43,22 @@ def analysis_query_event(info, init_binlog_file_name):
             merge_db = merge_replicate_table(schema)
             loging.info("规则库变更 %s ---> %s " % (schema, merge_db))
             if write_db is True:
-                if schema != merge_db:
+                if merge_db_table:
                     merge_schema = merge_replicate_table(schema)
+                if schema != merge_db:
                     if merge_db_table:
                         if merge_schema in only_schemas:
                             mysql.my_sql('use %s' % merge_schema)
-
+                        else:
+                            loging.info("skip execute [use %s]" % merge_schema)
+                    else:
+                        mysql.my_sql('use %s' % schema)
                 else:
                     if merge_db_table:
                         if schema in only_schemas:
                             mysql.my_sql('use %s' % schema)
+                        else:
+                            loging.info("skip execute [use %s]" % schema)
                     else:
                         mysql.my_sql('use %s' % schema)
         else:
@@ -62,9 +69,22 @@ def analysis_query_event(info, init_binlog_file_name):
         loging.debug("skip sql begin transaction")
     else:
         if write_ddl is True:
-            loging.info("同步复制DDL --> %s" % row_values["Query"])
-            mysql.my_sql("/*!40014 SET FOREIGN_KEY_CHECKS=0*/")
-            mysql.my_sql(row_values["Query"])
+            if merge_db_table:
+                map_database = merge_table_rule["database"]
+                for d in map_database:
+                    for k in d:
+                        if merge_schema in d[k]:
+                            loging.info("同步复制DDL --> %s" % row_values["Query"])
+                            mysql.my_sql("/*!40014 SET FOREIGN_KEY_CHECKS=0*/")
+                            mysql.my_sql(row_values["Query"])
+                        else:
+                            loging.info("skip DDL sql: %s " % row_values["Query"])
+                            break
+
+            else:
+                loging.info("同步复制DDL --> %s" % row_values["Query"])
+                mysql.my_sql("/*!40014 SET FOREIGN_KEY_CHECKS=0*/")
+                mysql.my_sql(row_values["Query"])
         else:
             loging.warning("DDL 语句 暂不支持")
     update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)

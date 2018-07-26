@@ -52,7 +52,7 @@ class Mysql(object):
                 if skip_err_code is None:
                     print("%s执行sql影响 %d 条 Error_code: 1062; handler error HA_ERR_FOUND_DUPP_KEY; ----->> %s " %
                           (update_datetime(), data, sql))
-                    sys.exit("请确认SQL是否执行正确!")
+                    sys.exit("执行SQL线程异常退出!请检查详细日志")
                 elif error_code in skip_err_code or 'all' in skip_err_code:
                     print("%s执行sql影响 %d 条 Error_code: 1062; handler error HA_ERR_FOUND_DUPP_KEY; ----->> %s " %
                           (update_datetime(), data, sql))
@@ -63,7 +63,7 @@ class Mysql(object):
                 if skip_err_code is None:
                     print("%s执行sql影响 %d 条 Error_code: 1032; handler error HA_ERR_KEY_NOT_FOUND; ----->> %s " %
                           (update_datetime(), data, sql))
-                    sys.exit("请确认SQL是否执行正确!")
+                    sys.exit("执行SQL线程异常退出!请检查详细日志")
                 elif error_code in skip_err_code or 'all' in skip_err_code:
                     print("%s执行sql影响 %d 条 Error_code: 1032; handler error HA_ERR_KEY_NOT_FOUND; ----->> %s " %
                           (update_datetime(), data, sql))
@@ -74,7 +74,7 @@ class Mysql(object):
                 if skip_err_code is None:
                     print("%s执行sql影响 %d 条 Error_code: 1032; handler error HA_ERR_KEY_NOT_FOUND; ----->> %s " %
                           (update_datetime(), data, sql))
-                    sys.exit("请确认SQL是否执行正确!")
+                    sys.exit("执行SQL线程异常退出!请检查详细日志")
                 elif error_code in skip_err_code or 'all' in skip_err_code:
                     print("%s执行sql影响 %d 条 Error_code: 1032; handler error HA_ERR_KEY_NOT_FOUND; ----->> %s " %
                           (update_datetime(), data, sql))
