@@ -9,3 +9,7 @@ if skip_err_code is not None:
     if type(skip_err_code) is list:
         if len(skip_err_code) == 0:
             sys.exit("parameter skip_err_code can not be empty")
+
+if merge_db_table:
+    if write_ddl:
+        sys.exit("合并表暂不支持DDL")
