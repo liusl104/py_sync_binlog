@@ -6,13 +6,15 @@
 from Crypto.Cipher import AES
 from binascii import b2a_hex
 import sys
+import os
 import uuid
-import sync_conf
+sys.path.append(os.path.abspath('..'))
+from sync_conf import encryption_strings
 
 
 def get_mac_address():
     mac = uuid.UUID(int=uuid.getnode()).hex[-12:]
-    mac_addr = "".join([mac[e:e+2] for e in range(0, 11, 2)]) + sync_conf.encryption_strings
+    mac_addr = "".join([mac[e:e+2] for e in range(0, 11, 2)]) + encryption_strings
     return mac_addr
 
 
