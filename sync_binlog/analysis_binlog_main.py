@@ -99,6 +99,10 @@ def analysis_query_event(info, init_binlog_file_name):
                             loging.info("同步复制DDL --> %s" % row_values["Query"])
                             mysql.my_sql("/*!40014 SET FOREIGN_KEY_CHECKS=0*/")
                             mysql.my_sql(row_values["Query"])
+                        elif len(schema) == 0:
+                            loging.info("同步复制DDL --> %s" % row_values["Query"])
+                            mysql.my_sql("/*!40014 SET FOREIGN_KEY_CHECKS=0*/")
+                            mysql.my_sql(row_values["Query"])
                         else:
                             loging.info("skip DDL sql: %s " % row_values["Query"])
         else:
