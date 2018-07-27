@@ -85,8 +85,9 @@ def batch_analysis_insert_binlog(info, init_binlog_file_name, table_map):
             sql_values = "(%s), \n" % (rows[1].replace("'None'", 'Null'))
             analysis_sqls += sql_values
             count_num += 1
-        loging.info("解析日志时间 : %s Position id %s" % (info["Date"], str(info["Log position"])))
-        loging.info("批量解析insert id : %s:%d-%s" % (server_uuid, batch_number_count, str(info["Log position"])))
+        read_time_position = str(info["Log position"])
+        loging.debug("解析日志时间 : %s Position id %s" % (info["Date"], read_time_position))
+        loging.info("批量解析insert id : %s:%d-%s" % (server_uuid, batch_number_count, read_time_position))
         analysis_sql += init_sql + analysis_sqls
         # loging.debug("Query : %s " % analysis_sql)
         db_table_map = table_map
@@ -101,8 +102,9 @@ def batch_analysis_insert_binlog(info, init_binlog_file_name, table_map):
             analysis_sql = "insert into %s (%s) VALUES (%s)," % (table_map, rows[0], rows[1].replace("'None'", 'Null'))
         else:
             analysis_sql += "(%s), \n" % rows[1].replace("'None'", 'Null')
-        loging.info("解析日志时间 : %s Position id %s " % (info["Date"], str(info["Log position"])))
-        loging.info("批量解析insert id : %s:%d-%s" % (server_uuid, batch_number_count, str(info["Log position"])))
+        read_time_position = str(info["Log position"])
+        loging.debug("解析日志时间 : %s Position id %s " % (info["Date"], read_time_position))
+        loging.info("批量解析insert id : %s:%d-%s" % (server_uuid, batch_number_count, read_time_position))
         # loging.debug("Query : %s " % analysis_sql)
         db_table_map = table_map
         # if write_db is True:
