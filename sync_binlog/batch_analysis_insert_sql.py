@@ -67,6 +67,8 @@ class batch_analysis_sql():
         values = eval(info["row_values"])["Values"]
         if self.count_num == 0:
             log_position = str(info["Log position"])
+        else:
+            log_position = str(info["Log position"])
         if len(values) > 1:
             rows = insert_key_values(values[0]["values"], table_map)
             if len(self.analysis_sql) == 0:
@@ -107,8 +109,8 @@ class batch_analysis_sql():
             self.analysis_sql = self.analysis_sql[:self.analysis_sql.rindex(',')]
             loging.debug("Query : %s " % self.analysis_sql)
             mysql.my_sql(self.analysis_sql)
-            loging.info("批量解析insert id : %s:%d-(%s-%s) 提交处理" % (self.server_uuid, self.batch_number_count, log_position,
-                                                                str(info["Log position"])))
+            loging.info("批量解析insert id : %s:%d-(%s-%s) 提交处理" % (self.server_uuid, self.batch_number_count,
+                                                                log_position, str(info["Log position"])))
             self.batch_number_count += 1
             self.analysis_sql = ''
             self.count_num = 0
