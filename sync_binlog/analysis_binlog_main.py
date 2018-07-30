@@ -7,11 +7,13 @@ from sync_binlog.analysis_rows import *
 from sync_binlog.merge_dbname_tables import *
 from sync_conf import *
 from sync_binlog.send_binlog import Mysql
-from sync_binlog import batch_analysis_insert_sql
+from sync_binlog.batch_analysis_insert_sql import batch_analysis_sql
 import datetime
 from decimal import Decimal
 
 mysql = Mysql("/*!40014 SET FOREIGN_KEY_CHECKS=0*/")
+
+batch_sql = batch_analysis_sql()
 
 
 def analysis_rotate_event(info):
@@ -175,7 +177,7 @@ def analysis_write_rows_event(info, init_binlog_file_name, table_map=None, hi_ta
         loging.debug("解析日志时间 : %s Position id %s Query : %s " % (info["Date"], str(info["Log position"]), None))
         update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
     else:
-        batch_analysis_insert_sql.batch_analysis_insert_binlog(info, init_binlog_file_name, table_map)
+        batch_sql.batch_analysis_insert_binlog(info, init_binlog_file_name, table_map)
 
 
 def analysis_delete_rows_event(info, init_binlog_file_name, hi_table_map=None, table_map=None):
