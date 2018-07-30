@@ -48,6 +48,8 @@ def analysis_query_event(info, init_binlog_file_name):
             if write_db is True:
                 if merge_db_table:
                     merge_schema = merge_replicate_table(schema)
+                else:
+                    merge_schema = merge_replicate_table(schema)
                 if schema != merge_db:
                     if merge_db_table:
                         if merge_schema in only_schemas:

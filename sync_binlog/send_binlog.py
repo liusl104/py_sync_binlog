@@ -19,32 +19,38 @@ class Mysql(object):
     conn = pymysql.connect(host=ip, port=port, user=user, passwd=password, autocommit=True, charset='utf8')
     cur = conn.cursor()
     startup_time = int(time.time())
+    old_sql = ''
 
     def __init__(self, sql):
         self.__sql = sql
 
     def my_sql(self, sql):
-        global startup_time
         current_time = int(time.time())
-        cur = Mysql.cur
-        if current_time - Mysql.startup_time >= 1200:
+        if current_time - self.startup_time >= 1200:
             try:
-                startup_time = int(time.time())
-                Mysql.conn.ping()
+                self.startup_time = int(time.time())
+                self.conn.ping()
             except Exception:
-                conn = Mysql.conn
-                cur = conn.cursor()
-            data = cur.execute(sql)
+                conn = self.conn
+                self.cur = conn.cursor()
+            data = self.cur.execute(sql)
         else:
             try:
-                data = cur.execute(sql)
+                if self.old_sql == sql:
+                    loging.info("skip sentence : %s " % sql)
+                    self.old_sql = sql
+                    data = 0
+                else:
+                    data = self.cur.execute(sql)
+                    loging.info(sql)
+                    self.old_sql = sql
             except Exception as e:
                 loging.critical("执行SQL错误：%s" % e)
                 loging.critical("--->> %s " % sql)
                 sys.exit("执行SQL错误：%s" % e)
         if data == 0:
             if sql[:3] == 'use':
-                loging.info(sql)
+                loging.debug(sql)
             elif sql[:6] == "insert":
                 error_code = '1062'
                 loging.error("执行sql影响 %d 条 Error_code: 1062; handler error HA_ERR_FOUND_DUPP_KEY; ----->> %s " %
@@ -79,7 +85,7 @@ class Mysql(object):
                     print("%s执行sql影响 %d 条 Error_code: 1032; handler error HA_ERR_KEY_NOT_FOUND; ----->> %s " %
                           (update_datetime(), data, sql))
             else:
-                loging.info(sql)
+                loging.debug(sql)
         else:
             loging.info("执行sql影响 %d 条" % data)
 

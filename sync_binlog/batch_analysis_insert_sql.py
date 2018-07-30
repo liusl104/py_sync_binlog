@@ -66,9 +66,9 @@ class batch_analysis_sql():
         analysis_sqls = ''
         values = eval(info["row_values"])["Values"]
         if self.count_num == 0:
-            log_position = str(info["Log position"])
+            self.log_position = str(info["Log position"])
         else:
-            log_position = str(info["Log position"])
+            self.log_position = str(info["Log position"])
         if len(values) > 1:
             rows = insert_key_values(values[0]["values"], table_map)
             if len(self.analysis_sql) == 0:
