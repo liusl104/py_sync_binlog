@@ -37,12 +37,11 @@ class Mysql(object):
         else:
             try:
                 if self.old_sql == sql:
-                    loging.info("skip sentence : %s " % sql)
+                    loging.debug("skip sentence : %s " % sql)
                     self.old_sql = sql
                     data = 0
                 else:
                     data = self.cur.execute(sql)
-                    loging.info(sql)
                     self.old_sql = sql
             except Exception as e:
                 loging.critical("执行SQL错误：%s" % e)
@@ -85,7 +84,7 @@ class Mysql(object):
                     print("%s执行sql影响 %d 条 Error_code: 1032; handler error HA_ERR_KEY_NOT_FOUND; ----->> %s " %
                           (update_datetime(), data, sql))
             else:
-                loging.debug(sql)
+                loging.info(sql)
         else:
             loging.info("执行sql影响 %d 条" % data)
 
