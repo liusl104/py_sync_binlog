@@ -34,6 +34,7 @@ class Mysql(object):
                 conn = self.conn
                 self.cur = conn.cursor()
             data = self.cur.execute(sql)
+            self.old_sql = sql
         else:
             try:
                 if self.old_sql == sql:
@@ -44,9 +45,16 @@ class Mysql(object):
                     data = self.cur.execute(sql)
                     self.old_sql = sql
             except Exception as e:
-                loging.critical("执行SQL错误：%s" % e)
-                loging.critical("--->> %s " % sql)
-                sys.exit("执行SQL错误：%s" % e)
+                if 1205 in e:
+                    loging.error(e)
+                    loging.warn("Retry execute sql %s " % sql)
+                    try:
+                        data = self.cur.execute(sql)
+                        self.old_sql = sql
+                    except Exception as e:
+                        loging.critical("执行SQL错误：%s" % e)
+                        loging.critical("--->> %s " % sql)
+                        sys.exit("执行SQL错误：%s" % e)
         if data == 0:
             if sql[:3] == 'use':
                 loging.debug(sql)
