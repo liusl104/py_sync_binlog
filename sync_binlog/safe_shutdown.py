@@ -20,10 +20,11 @@ def safety_shutdown():
     if not os.path.exists('%s.pid' % hostname):
         print("%s未能检测到%s.pid，系统正常退出" % (update_datetime(), hostname))
         obj = batch_sql.analysis_sql
-        analysis_sql = obj[:obj.rindex(',')]
-        if len(analysis_sql) > 0:
-            if write_db:
-                loging.debug("Query : %s " % analysis_sql)
-                mysql.my_sql(analysis_sql)
+        if len(obj) != 0:
+            analysis_sql = obj[:obj.rindex(',')]
+            if len(analysis_sql) > 0:
+                if write_db:
+                    loging.debug("Query : %s " % analysis_sql)
+                    mysql.my_sql(analysis_sql)
         loging.info("未能检测到%s.pid, System shutdown" % hostname)
         sys.exit()
