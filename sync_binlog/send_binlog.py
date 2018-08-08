@@ -44,17 +44,21 @@ class Mysql(object):
                 else:
                     data = self.cur.execute(sql)
                     self.old_sql = sql
-            except Exception as e:
-                if 1205 in e:
-                    loging.error(e)
-                    loging.warn("Retry execute sql %s " % sql)
+            except Exception as er:
+                error = er.args
+                if 1205 in error:
+                    loging.error(er.args)
+                    loging.warn("Retry after 5 seconds , execute sql %s :" % sql)
+                    time.sleep(5)
                     try:
                         data = self.cur.execute(sql)
                         self.old_sql = sql
                     except Exception as e:
-                        loging.critical("执行SQL错误：%s" % e)
+                        loging.error(e.args)
                         loging.critical("--->> %s " % sql)
-                        sys.exit("执行SQL错误：%s" % e)
+                loging.critical("执行SQL错误：%s" % er)
+                loging.critical("--->> %s " % sql)
+                sys.exit("执行SQL错误：%s" % er)
         if data == 0:
             if sql[:3] == 'use':
                 loging.debug(sql)

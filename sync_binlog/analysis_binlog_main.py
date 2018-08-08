@@ -40,6 +40,7 @@ def analysis_query_event(info, init_binlog_file_name):
     loging.debug("解析日志时间 : %s Position id %s 当前 Schema : [%s] Query : %s " % (info["Date"],
                                                                               str(info["Log position"]),
                                                                               schema, row_values["Query"]))
+    loging.info("解析event时间 ： %s Position id %s" % (info["Date"], str(info["Log position"])))
     if len(schema) != 0:
         loging.debug('switch database : use %s ' % schema)
         if merge_db_table is True:
@@ -121,7 +122,7 @@ def analysis_table_map_event(info, init_binlog_file_name):
                                                                                      row_values["Table id"],
                                                                                      row_values["Schema"],
                                                                                      row_values["Table"]))
-    update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
+    # update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
     loging.debug('switch database : use %s ' % row_values["Schema"])
     if merge_db_table is False:
         table_map = "`%s`.`%s`" % (row_values["Schema"], row_values["Table"])
@@ -155,7 +156,7 @@ def analysis_update_rows_event(info, init_binlog_file_name, table_map=None, hi_t
             loging.debug("Query : %s " % analysis_sql)
             if write_db is True:
                 mysql.my_sql(analysis_sql)
-        update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
+        # update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
         loging.info("解析日志时间 : %s Position id %s" % (info["Date"], str(info["Log position"])))
     else:
         values = eval(info["row_values"])["Values"][0]
@@ -167,7 +168,7 @@ def analysis_update_rows_event(info, init_binlog_file_name, table_map=None, hi_t
         loging.debug("Query : %s " % analysis_sql)
         if write_db is True:
             mysql.my_sql(analysis_sql)
-        update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
+        # update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
 
 
 def analysis_write_rows_event(info, init_binlog_file_name, table_map=None, hi_table_map=None):
@@ -177,7 +178,7 @@ def analysis_write_rows_event(info, init_binlog_file_name, table_map=None, hi_ta
         return True
     if len(eval(info["row_values"])["Values"]) == 0:
         loging.debug("解析日志时间 : %s Position id %s Query : %s " % (info["Date"], str(info["Log position"]), None))
-        update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
+        # update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
     else:
         batch_sql.batch_analysis_insert_binlog(info, init_binlog_file_name, table_map)
 
@@ -203,7 +204,7 @@ def analysis_delete_rows_event(info, init_binlog_file_name, hi_table_map=None, t
             loging.debug("Query : %s " % analysis_sql)
             if write_db is True:
                 mysql.my_sql(analysis_sql)
-            update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
+            # update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
         loging.info("解析日志时间 : %s Position id %s " % (info["Date"], str(info["Log position"])))
     else:
         values = eval(info["row_values"])["Values"][0]["values"]
@@ -221,7 +222,7 @@ def analysis_delete_rows_event(info, init_binlog_file_name, hi_table_map=None, t
         loging.debug("Query : %s " % analysis_sql)
         if write_db is True:
             mysql.my_sql(analysis_sql)
-        update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
+        # update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
 
 
 def analysis_xid_event(info, init_binlog_file_name):
@@ -230,6 +231,7 @@ def analysis_xid_event(info, init_binlog_file_name):
                                                                           eval(info["row_values"])["Transaction ID"]))
     else:
         loging.debug("解析日志时间 : %s Position id %s" % (info["Date"], str(info["Log position"])))
+    loging.info("解析xid event : %s Position id %s" % (info["Date"], str(info["Log position"])))
     update_binlog_pos(pos_id=str(info["Log position"]), binlog_file=init_binlog_file_name)
 
 
